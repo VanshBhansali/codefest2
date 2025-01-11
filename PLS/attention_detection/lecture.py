@@ -1,27 +1,24 @@
 import os
 import subprocess
 import whisper
+import ssl
+
+# Disable SSL verification temporarily
+ssl._create_default_https_context = ssl._create_unverified_context
 
 
 def extract_audio(video_file, output_audio_file):
-    """
-    Extracts audio from a video file using FFmpeg.
-
-    Args:
-        video_file (str): Path to the video file.
-        output_audio_file (str): Path to save the extracted audio file.
-    """
     try:
-        # Use FFmpeg to extract audio
         command = [
-            "ffmpeg",
-            "-i", video_file,  # Input video file
-            "-vn",  # No video
-            "-acodec", "pcm_s16le",  # Audio codec
-            "-ar", "16000",  # Sampling rate
-            "-ac", "1",  # Channels
-            output_audio_file  # Output audio file
+            "/opt/homebrew/bin/ffmpeg",  # Replace with the output of `which ffmpeg`
+            "-i", video_file,
+            "-vn",
+            "-acodec", "pcm_s16le",
+            "-ar", "16000",
+            "-ac", "1",
+            output_audio_file
         ]
+
         subprocess.run(command, check=True)
         print(f"Audio extracted to {output_audio_file}")
     except subprocess.CalledProcessError as e:
@@ -29,18 +26,8 @@ def extract_audio(video_file, output_audio_file):
 
 
 def transcribe_audio(audio_file):
-    """
-    Transcribes audio into text using Whisper.
-
-    Args:
-        audio_file (str): Path to the audio file to transcribe.
-
-    Returns:
-        str: Transcribed text.
-    """
     try:
-        # Load Whisper model
-        model = whisper.load_model("base")  # You can use 'tiny', 'small', 'medium', or 'large'
+        model = whisper.load_model("base")
         result = model.transcribe(audio_file)
         return result["text"]
     except Exception as e:
@@ -49,8 +36,8 @@ def transcribe_audio(audio_file):
 
 
 def main():
-    # File paths
-    video_file = "lecture_video.mp4"  # Replace with your video file path
+    # Update paths as needed
+    video_file = "PLS/attention_detection/extra/test.mp4"  # Replace with the actual file path
     output_audio_file = "extracted_audio.wav"
 
     # Extract audio from the video file

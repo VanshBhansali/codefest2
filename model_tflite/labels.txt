@@ -1,0 +1,3 @@
+0 Attentive 
+1 Yawning
+2 Boredom

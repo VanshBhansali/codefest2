@@ -37,7 +37,7 @@ def transcribe_audio(audio_file):
 
 def main():
     # Update paths as needed
-    video_file = "PLS/attention_detection/extra/test.mp4"  # Replace with the actual file path
+    video_file = "PLS/attention_detection/extra/smalltest.mp4"  # Replace with the actual file path
     output_audio_file = "extracted_audio.wav"
 
     # Extract audio from the video file

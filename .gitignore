@@ -3,3 +3,4 @@ venv/
 __pycache__/
 *.whl
 extracted_audio.wav
+smalltest.mp4

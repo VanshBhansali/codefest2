@@ -1,25 +1,32 @@
 import subprocess
-import os
 
-print("Running attention detection...")
+# Define the Python paths for the two virtual environments
+detection_env_python = "venv/bin/python"
+whisper_env_python = "whisper_env/bin/python"
+
 try:
-    subprocess.run(["python", "PLS/attention_detection/test.py"], check=True)
+    # Step 1: Run attention detection using the detection environment
+    print("Running attention detection...")
+    subprocess.run([detection_env_python, "PLS/attention_detection/test.py"], check=True)
+
+    # Step 2: Check for inattentive timestamps
+    inattentive_timestamps_path = "inattentive_timestamps.txt"
+    try:
+        with open(inattentive_timestamps_path, "r") as f:
+            inattentive_timestamps = f.readlines()
+    except FileNotFoundError:
+        inattentive_timestamps = []
+
+    if inattentive_timestamps:
+        print("Inattentive timestamps found. Proceeding to transcription mapping...")
+
+        # Step 3: Run Whisper transcription using the Whisper environment
+        subprocess.run([whisper_env_python, "PLS/attention_detection/lecture.py"], check=True)
+        print("Transcription mapping completed successfully!")
+    else:
+        print("No inattentive timestamps found. Skipping transcription.")
+
 except subprocess.CalledProcessError as e:
     print(f"Error while running subprocess: {e}")
-    print("Workflow completed.")
-    exit()
-
-# Check if inattentive timestamps were generated
-timestamps_file = "PLS/attention_detection/inattentive_timestamps.txt"
-if not os.path.exists(timestamps_file):
-    print("No inattentive timestamps found. Skipping transcription.")
-    exit()
-
-# Run transcription mapping
-print("Running transcription mapping...")
-try:
-    subprocess.run(["/path/to/whisper_env/bin/python", "PLS/attention_detection/lecture.py"], check=True)
-except subprocess.CalledProcessError as e:
-    print(f"Error while running transcription mapping: {e}")
-
-print("Workflow completed.")
+except Exception as e:
+    print(f"An unexpected error occurred: {e}")

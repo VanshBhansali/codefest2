@@ -1,32 +1,49 @@
 import subprocess
+import os
 
-# Define the Python paths for the two virtual environments
-detection_env_python = "venv/bin/python"
-whisper_env_python = "whisper_env/bin/python"
 
-try:
-    # Step 1: Run attention detection using the detection environment
-    print("Running attention detection...")
-    subprocess.run([detection_env_python, "PLS/attention_detection/test.py"], check=True)
-
-    # Step 2: Check for inattentive timestamps
-    inattentive_timestamps_path = "inattentive_timestamps.txt"
+def run_detection_script():
+    """
+    Runs the `test.py` script inside the `venv` virtual environment.
+    """
+    print("Running the detection script in 'venv' virtual environment...")
     try:
-        with open(inattentive_timestamps_path, "r") as f:
-            inattentive_timestamps = f.readlines()
-    except FileNotFoundError:
-        inattentive_timestamps = []
+        subprocess.run(
+            ["venv/bin/python", "PLS/attention_detection/test.py"],  # Correct path for test.py
+            check=True
+        )
+        print("Detection script completed successfully.")
+    except subprocess.CalledProcessError as e:
+        print(f"Error while running detection script: {e}")
+        exit(1)
 
-    if inattentive_timestamps:
-        print("Inattentive timestamps found. Proceeding to transcription mapping...")
 
-        # Step 3: Run Whisper transcription using the Whisper environment
-        subprocess.run([whisper_env_python, "PLS/attention_detection/lecture.py"], check=True)
-        print("Transcription mapping completed successfully!")
-    else:
-        print("No inattentive timestamps found. Skipping transcription.")
+def run_transcription_script():
+    """
+    Runs the transcription mapping script in the `whisper_env` virtual environment.
+    """
+    print("Running the transcription mapping script in 'whisper_env' virtual environment...")
+    transcription_script_path = "./PLS/attention_detection/extra/transcription_mapping.py"  # Correct path for transcription_mapping.py
+    try:
+        subprocess.run(
+            ["whisper_env/bin/python", transcription_script_path],  # Corrected path
+            check=True
+        )
+        print("Transcription mapping completed successfully.")
+    except subprocess.CalledProcessError as e:
+        print(f"Error while running transcription mapping script: {e}")
+        exit(1)
 
-except subprocess.CalledProcessError as e:
-    print(f"Error while running subprocess: {e}")
-except Exception as e:
-    print(f"An unexpected error occurred: {e}")
+
+if __name__ == "__main__":
+    # Step 1: Run the detection script
+    run_detection_script()
+
+    # Step 2: Check if the `inattentive_timestamps.txt` file exists
+    timestamps_file = "inattentive_timestamps.txt"
+    if not os.path.exists(timestamps_file):
+        print(f"Error: '{timestamps_file}' not found. Ensure the detection script runs correctly.")
+        exit(1)
+
+    # Step 3: Run the transcription mapping script
+    run_transcription_script()

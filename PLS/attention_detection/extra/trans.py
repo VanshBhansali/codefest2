@@ -60,7 +60,7 @@ def segment_transcription(transcription, lecture_duration, segment_duration=60):
 
 
 def main():
-    audio_file = "lecture_audio.mp4"  # Replace with your input audio file
+    audio_file = "PLS/attention_detection/extra/smalltest.mp4"  # Replace with your input audio file
     wav_file = "converted_audio.wav"
     timestamps_file = "inattentive_timestamps.txt"
     output_file = "attention_mapping.txt"

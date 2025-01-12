@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Lecture</title>
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center">Upload Lecture Video</h1>
+        <form action="/upload_lecture" method="POST" enctype="multipart/form-data" class="mt-4">
+            <div class="mb-3">
+                <label for="lecture_video" class="form-label">Upload Lecture Video:</label>
+                <input class="form-control" type="file" name="lecture_video" id="lecture_video" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Process Lecture Video</button>
+        </form>
+    </div>
+</body>
+</html>
